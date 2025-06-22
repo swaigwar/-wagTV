@@ -4,6 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
+import { logger } from '@/lib/utils/logger'
 
 function QuantumParticles() {
   const meshRef = useRef<THREE.InstancedMesh>(null!)
@@ -26,9 +27,14 @@ function QuantumParticles() {
     const matrix = new THREE.Matrix4()
     
     for (let i = 0; i < particleCount; i++) {
-      const x = positions[i * 3] + Math.sin(time + i * 0.1) * 2
-      const y = positions[i * 3 + 1] + Math.cos(time + i * 0.1) * 2
-      const z = positions[i * 3 + 2] + Math.sin(time * 0.5 + i * 0.1) * 2
+      const baseIndex = i * 3
+      const baseX = positions[baseIndex] ?? 0
+      const baseY = positions[baseIndex + 1] ?? 0
+      const baseZ = positions[baseIndex + 2] ?? 0
+      
+      const x = baseX + Math.sin(time + i * 0.1) * 2
+      const y = baseY + Math.cos(time + i * 0.1) * 2
+      const z = baseZ + Math.sin(time * 0.5 + i * 0.1) * 2
       
       matrix.setPosition(x, y, z)
       matrix.scale(new THREE.Vector3(0.1, 0.1, 0.1))
@@ -39,8 +45,8 @@ function QuantumParticles() {
   })
 
   useEffect(() => {
-    console.log('SWAIG TV: Quantum visualization initialized with', particleCount, 'particles')
-  }, [])
+    logger.info('Quantum visualization initialized', { particleCount })
+  }, [particleCount])
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, particleCount]}>

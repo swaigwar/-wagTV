@@ -1,0 +1,127 @@
+name: 🔒 DIY Enterprise Security
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  security-scan:
+    name: Security Scan Suite
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install Dependencies
+      run: npm ci
+      
+    - name: 🔒 NPM Security Audit
+      run: |
+        echo "::group::NPM Audit Report"
+        npm audit --audit-level=moderate || true
+        echo "::endgroup::"
+        
+    - name: 🔍 ESLint Security Scan
+      run: |
+        echo "::group::ESLint Security Rules"
+        npx eslint . --ext .ts,.tsx,.js,.jsx --config .eslintrc.js --format=compact
+        echo "::endgroup::"
+        
+    - name: 🐍 Setup Python for Semgrep
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: 📥 Install Semgrep
+      run: |
+        python -m pip install --upgrade pip
+        pip install semgrep
+        
+    - name: 🔎 Semgrep Static Analysis
+      run: |
+        echo "::group::Semgrep Security Scan"
+        semgrep --config=security/semgrep.yml . --json --output=semgrep-results.json || true
+        semgrep --config=security/semgrep.yml . || true
+        echo "::endgroup::"
+        
+    - name: 🔒 CodeQL Analysis
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript
+        
+    - name: 🔍 CodeQL Autobuild
+      uses: github/codeql-action/autobuild@v3
+      
+    - name: 📊 CodeQL Analysis Results
+      uses: github/codeql-action/analyze@v3
+      
+    - name: 📄 Upload Semgrep Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: semgrep-results
+        path: semgrep-results.json
+        
+    - name: 🚀 Run Custom Security Scanner
+      run: |
+        chmod +x scripts/security-scan.js
+        node scripts/security-scan.js
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 🔍 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
+        
+  trivy-scan:
+    name: Trivy Container Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🐳 Build Docker Image
+      run: |
+        echo "FROM node:18-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm ci --only=production
+        COPY . .
+        RUN npm run build
+        EXPOSE 3000
+        CMD [\"npm\", \"start\"]" > Dockerfile
+        docker build -t swaig-tv:latest .
+        
+    - name: 🔍 Run Trivy Vulnerability Scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'swaig-tv:latest'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: 📄 Upload Trivy Results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'

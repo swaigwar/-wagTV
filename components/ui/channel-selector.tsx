@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { logger } from '@/lib/utils/logger'
 
 interface Channel {
   id: string
@@ -56,7 +57,7 @@ export default function ChannelSelector({ currentChannel, onChannelChange }: Cha
               onClick={() => {
                 onChannelChange(channel.id)
                 setIsOpen(false)
-                console.log(`SWAIG TV: Switched to channel ${channel.name}`)
+                logger.info('Channel switched', { channel: channel.name, id: channel.id })
               }}
               className={`w-full text-left p-3 rounded hover:bg-white/10 transition-colors ${
                 currentChannel === channel.id ? 'bg-cyan-900/30 border-l-2 border-cyan-400' : ''

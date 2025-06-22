@@ -1,0 +1,60 @@
+# DIY Enterprise Security - Semgrep Configuration
+rules:
+  - id: swaig-tv-no-console-production
+    pattern: console.$METHOD(...)
+    message: |
+      Production console statements detected. Use proper logging instead.
+      Replace with logger.$METHOD() from @/lib/utils/logger
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      category: security
+      technology: [javascript, typescript]
+      subcategory: [audit]
+      references:
+        - https://owasp.org/www-project-top-ten/2017/A10_2017-Insufficient_Logging%26Monitoring
+  
+  - id: swaig-tv-no-eval
+    pattern: eval(...)
+    message: |
+      eval() usage detected - potential code injection vulnerability.
+      This is dangerous and should never be used.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-95: Code Injection"
+      
+  - id: swaig-tv-unsafe-innerhtml
+    pattern: $X.innerHTML = $Y
+    message: |
+      innerHTML assignment can lead to XSS vulnerabilities.
+      Use textContent or a sanitization library instead.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-79: Cross-site Scripting"
+      
+  - id: swaig-tv-hardcoded-secrets
+    patterns:
+      - pattern-regex: "(password|secret|key|token|api_key)\\s*=\\s*['\"][^'\"\\s]{8,}['\"]"
+    message: |
+      Potential hardcoded secret detected.
+      Use environment variables or secure secret management.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      
+  - id: swaig-tv-unsafe-random
+    pattern: Math.random()
+    message: |
+      Math.random() is not cryptographically secure.
+      For security-sensitive randomness, use crypto.getRandomValues()
+    languages: [typescript, javascript]
+    severity: INFO
+    metadata:
+      category: security
+      cwe: "CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator"

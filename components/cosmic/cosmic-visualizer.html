@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Cosmic Visualizer - OG iNfinit€ J€st€R</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Courier New', monospace;
+        }
+        
+        #cosmicCanvas {
+            display: block;
+            cursor: crosshair;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            user-select: none;
+        }
+        
+        #controls h3 {
+            margin: 0 0 10px 0;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .control-group {
+            margin: 10px 0;
+        }
+        
+        label {
+            display: inline-block;
+            width: 120px;
+            font-size: 12px;
+        }
+        
+        input[type="range"] {
+            width: 150px;
+            vertical-align: middle;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border: none;
+            color: #fff;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        #info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 12px;
+            text-align: right;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cosmicCanvas"></canvas>
+    
+    <div id="controls">
+        <h3>Cosmic Controls</h3>
+        <div class="control-group">
+            <label>Speed:</label>
+            <input type="range" id="speed" min="0.1" max="10" value="2" step="0.1">
+            <span id="speedValue">2</span>
+        </div>
+        <div class="control-group">
+            <label>Star Count:</label>
+            <input type="range" id="starCount" min="100" max="2000" value="800" step="50">
+            <span id="starCountValue">800</span>
+        </div>
+        <div class="control-group">
+            <label>Trail Effect:</label>
+            <input type="range" id="trail" min="0" max="0.9" value="0.1" step="0.05">
+            <span id="trailValue">0.1</span>
+        </div>
+        <div class="control-group">
+            <label>Warp Factor:</label>
+            <input type="range" id="warp" min="0" max="1" value="0" step="0.1">
+            <span id="warpValue">0</span>
+        </div>
+        <div class="control-group">
+            <button id="toggleNebula">Toggle Nebula</button>
+            <button id="toggleRotation">Toggle Rotation</button>
+        </div>
+        <div class="control-group">
+            <button id="hyperspace">HYPERSPACE JUMP</button>
+        </div>
+    </div>
+    
+    <div id="info">
+        OG iNfinit€ J€st€R | GSG Inspired<br>
+        Move mouse to navigate
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('cosmicCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        
+        // Configuration
+        let config = {
+            speed: 2,
+            starCount: 800,
+            trail: 0.1,
+            warp: 0,
+            nebulaEnabled: true,
+            rotationEnabled: false,
+            mouseX: width / 2,
+            mouseY: height / 2,
+            hyperspaceActive: false,
+            hyperspaceTimer: 0
+        };
+        
+        // Star system
+        let stars = [];
+        let nebulaClouds = [];
+        let particles = [];
+        
+        class Star {
+            constructor() {
+                this.reset();
+                this.z = Math.random() * 1000;
+            }
+            
+            reset() {
+                this.x = (Math.random() - 0.5) * 2000;
+                this.y = (Math.random() - 0.5) * 2000;
+                this.z = 1000;
+                this.prevX = this.x;
+                this.prevY = this.y;
+                this.color = this.generateStarColor();
+                this.size = Math.random() * 2 + 0.5;
+            }
+            
+            generateStarColor() {
+                const colors = [
+                    '#FFFFFF', '#FFF7E6', '#FFE4B5', '#FFD700',
+                    '#87CEEB', '#00CED1', '#9370DB', '#FF69B4'
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                this.prevX = this.x / this.z * 500 + width / 2;
+                this.prevY = this.y / this.z * 500 + height / 2;
+                
+                this.z -= config.speed * (1 + config.warp * 10);
+                
+                if (config.hyperspaceActive) {
+                    this.z -= 50;
+                }
+                
+                if (this.z <= 0) {
+                    this.reset();
+                }
+                
+                // Mouse influence
+                const mouseInfluence = 0.0001;
+                this.x += (config.mouseX - width / 2) * mouseInfluence * this.z;
+                this.y += (config.mouseY - height / 2) * mouseInfluence * this.z;
+                
+                if (config.rotationEnabled) {
+                    const angle = 0.001;
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+                    const nx = this.x * cos - this.y * sin;
+                    const ny = this.x * sin + this.y * cos;
+                    this.x = nx;
+                    this.y = ny;
+                }
+            }
+            
+            draw() {
+                const x = this.x / this.z * 500 + width / 2;
+                const y = this.y / this.z * 500 + height / 2;
+                
+                const size = (1 - this.z / 1000) * this.size * (1 + config.warp * 2);
+                const opacity = 1 - this.z / 1000;
+                
+                if (x >= 0 && x <= width && y >= 0 && y <= height) {
+                    // Draw star with glow
+                    ctx.save();
+                    ctx.globalAlpha = opacity;
+                    
+                    // Glow effect
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, size * 4);
+                    gradient.addColorStop(0, this.color);
+                    gradient.addColorStop(0.1, this.color);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x - size * 4, y - size * 4, size * 8, size * 8);
+                    
+                    // Core
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(x - size/2, y - size/2, size, size);
+                    
+                    // Warp trail
+                    if (config.warp > 0 && this.prevX && this.prevY) {
+                        ctx.strokeStyle = this.color;
+                        ctx.lineWidth = size;
+                        ctx.globalAlpha = opacity * config.warp;
+                        ctx.beginPath();
+                        ctx.moveTo(this.prevX, this.prevY);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                    }
+                    
+                    ctx.restore();
+                }
+            }
+        }
+        
+        class NebulaCloud {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.radius = Math.random() * 200 + 100;
+                this.color = this.generateNebulaColor();
+                this.opacity = Math.random() * 0.3 + 0.1;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.001;
+            }
+            
+            generateNebulaColor() {
+                const colors = [
+                    'rgba(138, 43, 226, ', // Purple
+                    'rgba(0, 191, 255, ',   // Deep Sky Blue
+                    'rgba(255, 20, 147, ',  // Deep Pink
+                    'rgba(0, 255, 127, '    // Spring Green
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                this.rotation += this.rotationSpeed;
+                this.x += Math.sin(this.rotation) * 0.5;
+                this.y += Math.cos(this.rotation) * 0.3;
+                
+                // Wrap around screen
+                if (this.x < -this.radius) this.x = width + this.radius;
+                if (this.x > width + this.radius) this.x = -this.radius;
+                if (this.y < -this.radius) this.y = height + this.radius;
+                if (this.y > height + this.radius) this.y = -this.radius;
+            }
+            
+            draw() {
+                if (!config.nebulaEnabled) return;
+                
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.radius
+                );
+                gradient.addColorStop(0, this.color + '0.3)');
+                gradient.addColorStop(0.5, this.color + '0.1)');
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(
+                    this.x - this.radius,
+                    this.y - this.radius,
+                    this.radius * 2,
+                    this.radius * 2
+                );
+                
+                ctx.restore();
+            }
+        }
+        
+        // Initialize
+        function init() {
+            stars = [];
+            for (let i = 0; i < config.starCount; i++) {
+                stars.push(new Star());
+            }
+            
+            nebulaClouds = [];
+            for (let i = 0; i < 5; i++) {
+                nebulaClouds.push(new NebulaCloud());
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            // Clear or fade effect
+            ctx.fillStyle = `rgba(0, 0, 0, ${1 - config.trail})`;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Update and draw nebula
+            nebulaClouds.forEach(cloud => {
+                cloud.update();
+                cloud.draw();
+            });
+            
+            // Update and draw stars
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            
+            // Hyperspace effect
+            if (config.hyperspaceActive) {
+                config.hyperspaceTimer--;
+                if (config.hyperspaceTimer <= 0) {
+                    config.hyperspaceActive = false;
+                    config.warp = 0;
+                    updateControlValues();
+                }
+                
+                // Flash effect
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.1})`;
+                ctx.fillRect(0, 0, width, height);
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Event listeners
+        canvas.addEventListener('mousemove', (e) => {
+            config.mouseX = e.clientX;
+            config.mouseY = e.clientY;
+        });
+        
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+        
+        // Control handlers
+        function updateControlValues() {
+            document.getElementById('speedValue').textContent = config.speed.toFixed(1);
+            document.getElementById('starCountValue').textContent = config.starCount;
+            document.getElementById('trailValue').textContent = config.trail.toFixed(2);
+            document.getElementById('warpValue').textContent = config.warp.toFixed(1);
+            document.getElementById('warp').value = config.warp;
+        }
+        
+        document.getElementById('speed').addEventListener('input', (e) => {
+            config.speed = parseFloat(e.target.value);
+            updateControlValues();
+        });
+        
+        document.getElementById('starCount').addEventListener('input', (e) => {
+            config.starCount = parseInt(e.target.value);
+            init();
+            updateControlValues();
+        });
+        
+        document.getElementById('trail').addEventListener('input', (e) => {
+            config.trail = parseFloat(e.target.value);
+            updateControlValues();
+        });
+        
+        document.getElementById('warp').addEventListener('input', (e) => {
+            config.warp = parseFloat(e.target.value);
+            updateControlValues();
+        });
+        
+        document.getElementById('toggleNebula').addEventListener('click', () => {
+            config.nebulaEnabled = !config.nebulaEnabled;
+        });
+        
+        document.getElementById('toggleRotation').addEventListener('click', () => {
+            config.rotationEnabled = !config.rotationEnabled;
+        });
+        
+        document.getElementById('hyperspace').addEventListener('click', () => {
+            config.hyperspaceActive = true;
+            config.hyperspaceTimer = 60;
+            config.warp = 1;
+            updateControlValues();
+        });
+        
+        // Start
+        init();
+        animate();
+    </script>
+</body>
+</html>

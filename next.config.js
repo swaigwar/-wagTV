@@ -30,7 +30,11 @@ const nextConfig = {
     }
 
     // Let Next transpile WASM for both client & server
-    config.experiments = { asyncWebAssembly: true, topLevelAwait: true };
+    config.experiments = { 
+      ...config.experiments,
+      asyncWebAssembly: true, 
+      topLevelAwait: true 
+    };
 
     // Example absolute‑import alias
     config.resolve.alias["@"] = path.resolve(__dirname);

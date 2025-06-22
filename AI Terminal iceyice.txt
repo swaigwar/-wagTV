@@ -1,3 +1,129 @@
+terminal sessions are white hot gold
+build anything #diyuniverse
+#deplatform
+#thenewleft
+
+termial 1:
+@swaigwar ➜ /workspaces/-wagTV (main) $ npm install
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'swaig-tv@0.1.0-alpha.0',
+npm WARN EBADENGINE   required: { node: '>=18.18 <21', npm: '>=10' },
+npm WARN EBADENGINE   current: { node: 'v22.16.0', npm: '9.8.1' }
+npm WARN EBADENGINE }
+
+> swaig-tv@0.1.0-alpha.0 prepare
+> husky install
+
+husky - install command is DEPRECATED
+
+up to date, audited 809 packages in 957ms
+
+207 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+@swaigwar ➜ /workspaces/-wagTV (main) $ git add .
+@swaigwar ➜ /workspaces/-wagTV (main) $ git commit -m $sAIgTV Big Bang Review"
+> git commit -m "sAIgTV Big Bang Review"
+> ^C
+@swaigwar ➜ /workspaces/-wagTV (main) $ git commit -m "sAIgTV Big Bang Review"
+[main bc949f0a] sAIgTV Big Bang Review
+ Author: swaigwar <swaiggyverse@gmail.com>
+ 10 files changed, 3246 insertions(+), 7 deletions(-)
+ create mode 100644 Big Bang Launch Review.txt
+ create mode 100644 iceyice.txt
+@swaigwar ➜ /workspaces/-wagTV (main) $ 
+
+
+terminal 2:
+@swaigwar ➜ /workspaces/-wagTV (main) $ npm install
+npm WARN EBADENGINE Unsupported engine {
+npm WARN EBADENGINE   package: 'swaig-tv@0.1.0-alpha.0',
+npm WARN EBADENGINE   required: { node: '>=18.18 <21', npm: '>=10' },
+npm WARN EBADENGINE   current: { node: 'v22.16.0', npm: '9.8.1' }
+npm WARN EBADENGINE }
+
+> swaig-tv@0.1.0-alpha.0 prepare
+> husky install
+
+husky - install command is DEPRECATED
+
+up to date, audited 812 packages in 978ms
+
+208 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+@swaigwar ➜ /workspaces/-wagTV (main) $ npm run dev
+
+> swaig-tv@0.1.0-alpha.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.30
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · esmExternals
+    · scrollRestoration
+
+ ✓ Starting...
+ ✓ Ready in 1229ms
+ ○ Compiling / ...
+ ⨯ app/layout.tsx
+An error occurred in `next/font`.
+
+ReferenceError: module is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/workspaces/-wagTV/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///workspaces/-wagTV/postcss.config.js:1:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async findConfig (/workspaces/-wagTV/node_modules/next/dist/lib/find-config.js:85:25)
+    at async getPostCssPlugins (/workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:89:18)
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/index.js:124:36
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js:86:33
+    at async Span.traceAsyncFn (/workspaces/-wagTV/node_modules/next/dist/trace/trace.js:154:20)
+ ⨯ app/layout.tsx
+An error occurred in `next/font`.
+
+ReferenceError: module is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/workspaces/-wagTV/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///workspaces/-wagTV/postcss.config.js:1:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async findConfig (/workspaces/-wagTV/node_modules/next/dist/lib/find-config.js:85:25)
+    at async getPostCssPlugins (/workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:89:18)
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/index.js:124:36
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js:86:33
+    at async Span.traceAsyncFn (/workspaces/-wagTV/node_modules/next/dist/trace/trace.js:154:20)
+ ⨯ app/layout.tsx
+An error occurred in `next/font`.
+
+ReferenceError: module is not defined in ES module scope
+This file is being treated as an ES module because it has a '.js' file extension and '/workspaces/-wagTV/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+    at file:///workspaces/-wagTV/postcss.config.js:1:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async findConfig (/workspaces/-wagTV/node_modules/next/dist/lib/find-config.js:85:25)
+    at async getPostCssPlugins (/workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/plugins.js:89:18)
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/config/blocks/css/index.js:124:36
+    at async /workspaces/-wagTV/node_modules/next/dist/build/webpack/loaders/next-font-loader/index.js:86:33
+    at async Span.traceAsyncFn (/workspaces/-wagTV/node_modules/next/dist/trace/trace.js:154:20)
+ GET / 500 in 10381ms
+^C
+
+@swaigwar ➜ /workspaces/-wagTV (main) $ https://cuddly-robot-r46jqgqxx5r7cw76j-3001.app.github.dev/
+bash: https://cuddly-robot-r46jqgqxx5r7cw76j-3001.app.github.dev/: No such file or directory
+@swaigwar ➜ /workspaces/-wagTV (main) $ 
+
+
+
+
+
+
+
+
+
+
 claude code terminal 2:    Similarly start Swaig-Link's dev server (it might 
   use a different port, e.g. 3002 if configured). The 
   environment CORS settings include both 

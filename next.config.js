@@ -1,3 +1,10 @@
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -12,7 +19,7 @@ const nextConfig = {
   webpack(config, { isServer }) {
     // Bundle‑size inspection
     if (process.env.ANALYZE) {
-      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+      // BundleAnalyzerPlugin imported at top
       config.plugins.push(
         new BundleAnalyzerPlugin({
           analyzerMode: "static",
@@ -26,7 +33,7 @@ const nextConfig = {
     config.experiments = { asyncWebAssembly: true, topLevelAwait: true };
 
     // Example absolute‑import alias
-    config.resolve.alias["@"] = require("path").resolve(__dirname);
+    config.resolve.alias["@"] = path.resolve(__dirname);
 
     return config;
   },

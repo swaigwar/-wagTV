@@ -18,7 +18,7 @@
     "test": "jest --coverage",
     "analyze": "cross-env ANALYZE=true next build",
     "prepare": "husky install",
-    "quantum:init": "node ./scripts/init‑quantum.mjs"
+    "quantum:init": "node ./scripts/quantum-init.js"
   },
   "dependencies": {
     "next": "14.2.4",

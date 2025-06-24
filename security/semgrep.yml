@@ -58,3 +58,58 @@ rules:
     metadata:
       category: security
       cwe: "CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator"
+      
+  # AI-Specific Security Rules
+  - id: swaig-tv-ai-prompt-injection
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $FUNCTION(..., $USER_INPUT, ...)
+          - pattern: |
+              $MODEL.generate(..., $USER_INPUT, ...)
+    message: |
+      Potential AI prompt injection vulnerability detected.
+      Ensure user input is sanitized before sending to AI models.
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      category: ai-security
+      cwe: "CWE-74: Improper Neutralization of Special Elements"
+      
+  - id: swaig-tv-ai-output-sanitization
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $COMPONENT.dangerouslySetInnerHTML = { __html: $AI_OUTPUT }
+          - pattern: |
+              $ELEMENT.innerHTML = $AI_OUTPUT
+    message: |
+      AI output is rendered without sanitization.
+      Always sanitize AI-generated content before rendering.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: ai-security
+      cwe: "CWE-79: Cross-site Scripting"
+      
+  - id: swaig-tv-ai-model-credentials
+    patterns:
+      - pattern-regex: "(openai|ai_api|model_api|ai_key)\\s*=\\s*['\"][^'\"\\s]{8,}['\"]"
+    message: |
+      Potential hardcoded AI model credentials detected.
+      Use environment variables for all AI API keys.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: ai-security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      
+  - id: swaig-tv-ai-rate-limiting
+    pattern: |
+      $MODEL.$METHOD(...)
+    message: |
+      AI model call detected. Consider implementing rate limiting to prevent abuse and cost overruns.
+    languages: [typescript, javascript]
+    severity: INFO
+    metadata:
+      category: ai-security

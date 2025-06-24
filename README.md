@@ -36,6 +36,25 @@ Open [http://localhost:3000](http://localhost:3000) and enjoy the quantum vibes!
 - 🔒 Enterprise-grade security scanning
 - 🚀 Optimized performance
 - 📱 Responsive design
+- 🛡️ AI safety measures including rate limiting and content sanitization
+
+## Project Structure
+
+### Components
+
+- `/components/swaig/optimized-quantum-visualizer.tsx` - Main quantum visualization component
+- `/components/swaig/safe-quantum-visualizer.tsx` - Safety-focused wrapper
+- `/components/swaig/safe-ai-query.tsx` - Reusable AI query component with safety measures
+- `/components/swaig/legacy/` - Archived previous versions of components
+
+### Safety Utilities
+
+- `/lib/utils/rate-limiter.ts` - Prevents API abuse through request throttling
+- `/lib/utils/ai-sanitizer.ts` - Sanitizes AI-generated content for safety
+- `/security/semgrep.yml` - Custom security rules for AI safety
+- `/scripts/security-scan.js` - Automated security scanning
+
+For more details on AI safety implementation, see the `AI-SAFETY-IMPLEMENTATION.md` and `AI-SAFETY-TECHNICAL-SUMMARY.md` documents.
 
 ## Contributing
 

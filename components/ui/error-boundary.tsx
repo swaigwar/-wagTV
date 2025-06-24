@@ -23,12 +23,21 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to monitoring service in production
-    if (process.env.NODE_ENV === 'production') {
-      // TODO: Add error logging service
-    } else {
+    // Import error reporter dynamically to avoid SSR issues
+    import('@/lib/utils/error-reporter').then(({ default: errorReporter }) => {
+      errorReporter.reportError(error, {
+        component: 'ErrorBoundary',
+        action: 'component_error',
+        metadata: {
+          componentStack: errorInfo.componentStack,
+          errorBoundary: true,
+        }
+      }, 'high')
+    }).catch((importError) => {
+      // Fallback to console logging if error reporter fails
       console.error('SWAIG TV Error:', error, errorInfo)
-    }
+      console.error('Error reporter import failed:', importError)
+    })
   }
 
   render() {
@@ -42,6 +51,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               Reality is being recalibrated...
             </p>
             <button 
+              type="button"
               onClick={() => this.setState({ hasError: false })}
               className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:opacity-80 transition-opacity"
             >

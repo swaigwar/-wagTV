@@ -21,7 +21,7 @@
 
 The SWAIG TV project now has a clearer component structure:
 
-```
+```typescript
 components/
   swaig/
     optimized-quantum-visualizer.tsx  # Main component - use this for new development
@@ -48,4 +48,4 @@ components/
 
 ---
 
-*All refactoring completed successfully with no critical issues detected.*
+_All refactoring completed successfully with no critical issues detected._

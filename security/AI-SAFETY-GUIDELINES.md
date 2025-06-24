@@ -121,4 +121,6 @@ AI safety is a rapidly evolving field. These guidelines will be regularly update
 
 ---
 
-*Last Updated: June 24, 2025*
+### Version History
+
+Last Updated: June 24, 2025

@@ -25,7 +25,7 @@ jobs:
         cache: 'npm'
         
     - name: 📦 Install Dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
       
     - name: 🔒 NPM Security Audit
       run: |
@@ -36,7 +36,7 @@ jobs:
     - name: 🔍 ESLint Security Scan
       run: |
         echo "::group::ESLint Security Rules"
-        npx eslint . --ext .ts,.tsx,.js,.jsx --config .eslintrc.js --format=compact
+        npx eslint . --ext .ts,.tsx,.js,.jsx --config .eslintrc.json --format=compact
         echo "::endgroup::"
         
     - name: 🐍 Setup Python for Semgrep
@@ -106,7 +106,7 @@ jobs:
         echo "FROM node:18-alpine
         WORKDIR /app
         COPY package*.json ./
-        RUN npm ci --only=production
+        RUN npm ci --only=production --legacy-peer-deps
         COPY . .
         RUN npm run build
         EXPOSE 3000

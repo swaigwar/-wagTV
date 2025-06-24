@@ -83,7 +83,7 @@ export default function Home() {
         <div className="absolute top-4 left-4 z-10 glass-panel p-4">
           <h1 className="text-2xl font-bold neon-text mb-2">SWAIG TV</h1>
           <p className="text-gray-300 text-sm">Universal Quantum Simulation Platform</p>
-          <p className="text-gray-400 text-xs mt-2">Alpha v1.0.0</p>
+          <p className="text-gray-400 text-xs mt-2">Alpha v1.1.0 🔒</p>
         </div>
 
         <div className="absolute top-4 right-4 z-10">

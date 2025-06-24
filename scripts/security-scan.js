@@ -53,7 +53,8 @@ if (semgrepAvailable) {
     description: 'Semgrep Static Security Analysis'
   })
 } else {
-  console.log('⚠️  Semgrep not installed. Install with: pip install semgrep\n')
+  console.log('⚠️  Semgrep - Optional tool not installed (non-critical)')
+  console.log('   Install with: pip install semgrep\n')
 }
 
 let totalIssues = 0

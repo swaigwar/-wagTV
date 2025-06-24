@@ -10,9 +10,9 @@
     "npm": ">=10"
   },
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "PORT=3003 HOST=0.0.0.0 next dev",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "PORT=3003 HOST=0.0.0.0 next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "jest --coverage",
@@ -54,6 +54,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
+    "postcss-preset-env": "^10.2.3",
     "prettier": "^3.3.1",
     "prettier-plugin-tailwindcss": "^0.5.13",
     "tailwindcss": "^3.4.4",

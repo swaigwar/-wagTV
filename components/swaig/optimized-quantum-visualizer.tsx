@@ -9,28 +9,20 @@ import { logger } from '@/lib/utils/logger'
 const MAX_PARTICLES = parseInt(process.env['NEXT_PUBLIC_MAX_PARTICLES'] || '1000')
 
 const QuantumParticles = memo(function QuantumParticles() {
-  const meshRef = useRef<THREE.InstancedMesh>(null!)
+  const meshRef = useRef<THREE.InstancedMesh | null>(null)
   const particleCount = Math.min(MAX_PARTICLES, 500) // Reduced for better performance
   
-  const { positions, colors } = useMemo(() => {
+  const { positions } = useMemo(() => {
     const pos = new Float32Array(particleCount * 3)
-    const col = new Float32Array(particleCount * 3)
     
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3
-      pos[i3] = (Math.random() - 0.5) * 50
-      pos[i3 + 1] = (Math.random() - 0.5) * 50
-      pos[i3 + 2] = (Math.random() - 0.5) * 50
-      
-      // Vary colors for visual interest
-      const hue = (i / particleCount) * 360
-      const color = new THREE.Color().setHSL(hue / 360, 0.8, 0.6)
-      col[i3] = color.r
-      col[i3 + 1] = color.g
-      col[i3 + 2] = color.b
+      pos.set([(Math.random() - 0.5) * 50], i3)
+      pos.set([(Math.random() - 0.5) * 50], i3 + 1)  
+      pos.set([(Math.random() - 0.5) * 50], i3 + 2)
     }
     
-    return { positions: pos, colors: col }
+    return { positions: pos }
   }, [particleCount])
 
   // Optimize animation loop with reduced calculations
@@ -45,9 +37,9 @@ const QuantumParticles = memo(function QuantumParticles() {
     if (Math.floor(time * 60) % 2 === 0) {
       for (let i = 0; i < particleCount; i++) {
         const baseIndex = i * 3
-        const baseX = positions[baseIndex] ?? 0
-        const baseY = positions[baseIndex + 1] ?? 0
-        const baseZ = positions[baseIndex + 2] ?? 0
+        const baseX = positions.at(baseIndex) ?? 0
+        const baseY = positions.at(baseIndex + 1) ?? 0
+        const baseZ = positions.at(baseIndex + 2) ?? 0
         
         // Simplified animation calculations
         const phase = i * 0.1

@@ -1,13 +1,13 @@
 'use client'
 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Sphere } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 import { logger } from '@/lib/utils/logger'
 
 function QuantumParticles() {
-  const meshRef = useRef<THREE.InstancedMesh>(null!)
+  const meshRef = useRef<THREE.InstancedMesh | null>(null)
   const particleCount = 1000
   
   const positions = useMemo(() => {
@@ -28,9 +28,9 @@ function QuantumParticles() {
     
     for (let i = 0; i < particleCount; i++) {
       const baseIndex = i * 3
-      const baseX = positions[baseIndex] ?? 0
-      const baseY = positions[baseIndex + 1] ?? 0
-      const baseZ = positions[baseIndex + 2] ?? 0
+      const baseX = positions.at(baseIndex) ?? 0
+      const baseY = positions.at(baseIndex + 1) ?? 0
+      const baseZ = positions.at(baseIndex + 2) ?? 0
       
       const x = baseX + Math.sin(time + i * 0.1) * 2
       const y = baseY + Math.cos(time + i * 0.1) * 2

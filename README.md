@@ -1,6 +1,6 @@
 # SWAIG TV - Quantum Visual Platform
 
-**Alpha v1.0.0**
+## Alpha v1.1.0
 
 Experimental quantum visualization platform built with Next.js 14, Three.js and WebAssembly. Perfect for DIY creators exploring generative visuals. Alpha release - expect some rough edges!
 
@@ -24,7 +24,7 @@ Open [http://localhost:3000](http://localhost:3000) and enjoy the quantum vibes!
 ## Commands
 
 - `npm run dev` - Start development server
-- `npm run build` - Production build  
+- `npm run build` - Production build
 - `npm test` - Run tests
 - `npm run security:scan` - Security check
 - `npm run analyze` - Bundle analysis
@@ -34,6 +34,8 @@ Open [http://localhost:3000](http://localhost:3000) and enjoy the quantum vibes!
 - 🌌 Cosmic visualizations with Three.js
 - ⚛️ Quantum particle simulations
 - 🔒 Enterprise-grade security scanning
+- 🏷️ Built-in SecurityBadge showing app version
+- 🛡️ OptimizedQuantumVisualizer sanitized to prevent object injection
 - 🚀 Optimized performance
 - 📱 Responsive design
 

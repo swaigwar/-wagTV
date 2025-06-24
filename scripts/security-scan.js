@@ -7,7 +7,8 @@ console.log('🔒 DIY Enterprise Security Scanner Starting...\n')
 const runCommand = (command, description) => {
   try {
     console.log(`🔍 ${description}...`)
-    const output = execSync(command, { 
+    // command comes from predefined securityChecks array - no user input
+    const output = execSync(command, {
       encoding: 'utf-8',
       stdio: ['inherit', 'pipe', 'pipe'],
       timeout: 30000 

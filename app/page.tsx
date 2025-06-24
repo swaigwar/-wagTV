@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import ChannelSelector from '@/components/ui/channel-selector'
 import OptimizedQuantumVisualizer from '@/components/swaig/optimized-quantum-visualizer'
 import ErrorBoundary from '@/components/ui/error-boundary'
+import SecurityBadge from '@/components/ui/SecurityBadge'
 import { logger } from '@/lib/utils/logger'
 
 function StarField() {
@@ -51,16 +52,29 @@ export default function Home() {
   const renderChannel = () => {
     switch (currentChannel) {
       case 'quantum':
-        return <OptimizedQuantumVisualizer />
+        logger.info('Rendering Quantum channel')
+        return (
+          <ErrorBoundary>
+            <OptimizedQuantumVisualizer />
+          </ErrorBoundary>
+        )
       case 'bigbang':
-        return <BigBangVisualizer />
+        logger.info('Rendering Big Bang channel')
+        return (
+          <ErrorBoundary>
+            <BigBangVisualizer />
+          </ErrorBoundary>
+        )
       case 'cosmic':
       default:
+        logger.info('Rendering Cosmic channel')
         return (
-          <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-            <StarField />
-            <OrbitControls enableZoom={false} enablePan={false} />
-          </Canvas>
+          <ErrorBoundary>
+            <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+              <StarField />
+              <OrbitControls enableZoom={false} enablePan={false} />
+            </Canvas>
+          </ErrorBoundary>
         )
     }
   }
@@ -83,7 +97,7 @@ export default function Home() {
         <div className="absolute top-4 left-4 z-10 glass-panel p-4">
           <h1 className="text-2xl font-bold neon-text mb-2">SWAIG TV</h1>
           <p className="text-gray-300 text-sm">Universal Quantum Simulation Platform</p>
-          <p className="text-gray-400 text-xs mt-2">Alpha v1.0.0</p>
+          <SecurityBadge />
         </div>
 
         <div className="absolute top-4 right-4 z-10">

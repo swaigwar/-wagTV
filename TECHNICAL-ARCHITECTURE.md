@@ -49,7 +49,7 @@ impl QuantumProcessor {
             measurement_outcomes: CircularBuffer::with_capacity(1024),
         }
     }
-    
+
     #[wasm_bindgen]
     pub fn apply_hadamard_transform(&mut self, target: u32) -> Result<(), JsValue> {
         // Quantum gate implementation with SIMD optimization
@@ -84,10 +84,10 @@ const QuantumVisualizer: FC<QuantumVisualizerProps> = ({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null)
   const computeShaderRef = useRef<THREE.ShaderMaterial>(null)
-  
+
   // GPU compute pipeline for quantum state evolution
   const { gl, size, viewport } = useThree()
-  const computeTarget = useMemo(() => 
+  const computeTarget = useMemo(() =>
     new THREE.WebGLRenderTarget(size.width, size.height, {
       format: THREE.RGBAFormat,
       type: THREE.FloatType,
@@ -95,25 +95,25 @@ const QuantumVisualizer: FC<QuantumVisualizerProps> = ({
       minFilter: THREE.NearestFilter
     }), [size]
   )
-  
+
   // Quantum state update loop with Web Workers
   useFrame((state, delta) => {
     if (!meshRef.current || !computeShaderRef.current) return
-    
+
     // Update quantum state via WebAssembly
     quantumProcessor.evolve_state(delta * simulationSpeed)
-    
+
     // Transfer quantum amplitudes to GPU uniforms
     const amplitudes = quantumProcessor.get_amplitudes()
     computeShaderRef.current.uniforms.u_quantumAmplitudes.value = amplitudes
     computeShaderRef.current.uniforms.u_time.value += delta
-    
+
     // Render to compute target for post-processing
     gl.setRenderTarget(computeTarget)
     gl.render(state.scene, state.camera)
     gl.setRenderTarget(null)
   })
-  
+
   return (
     <mesh ref={meshRef}>
       <sphereGeometry args={dimensions} />
@@ -171,7 +171,7 @@ const nextConfig = {
       topLevelAwait: true,
       layers: true,
     }
-    
+
     // Custom optimization for quantum modules
     config.optimization = {
       ...config.optimization,
@@ -220,7 +220,7 @@ const nextConfig = {
         }),
       ],
     }
-    
+
     // Bundle analysis for development
     if (process.env.ANALYZE === 'true') {
       config.plugins.push(
@@ -233,7 +233,7 @@ const nextConfig = {
         })
       )
     }
-    
+
     // Compression for production builds
     if (!dev && !isServer) {
       config.plugins.push(
@@ -246,13 +246,13 @@ const nextConfig = {
         })
       )
     }
-    
+
     // WebAssembly file handling
     config.module.rules.push({
       test: /\.wasm$/,
       type: 'webassembly/async',
     })
-    
+
     // Custom loader for quantum simulation files
     config.module.rules.push({
       test: /\.quantum$/,
@@ -266,7 +266,7 @@ const nextConfig = {
         },
       ],
     })
-    
+
     return config
   },
   async headers() {
@@ -275,9 +275,9 @@ const nextConfig = {
         source: '/(.*)',
         headers: [
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
-          { 
-            key: 'Strict-Transport-Security', 
-            value: 'max-age=63072000; includeSubDomains; preload' 
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
           },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -428,7 +428,7 @@ class SwaigelockSecurityEngine {
   private cryptoProvider: QuantumCryptoProvider
   private networkMonitor: NetworkSecurityMonitor
   private memoryGuard: MemoryProtectionSystem
-  
+
   constructor(config: SwaigelockConfig) {
     this.config = config
     this.threatModel = new ThreatIntelligence()
@@ -436,7 +436,7 @@ class SwaigelockSecurityEngine {
     this.networkMonitor = new NetworkSecurityMonitor()
     this.memoryGuard = new MemoryProtectionSystem()
   }
-  
+
   async initializeSecuritySuite(): Promise<SecurityReport> {
     const tasks = await Promise.allSettled([
       this.performStaticAnalysis(),
@@ -446,15 +446,15 @@ class SwaigelockSecurityEngine {
       this.assessRuntimeSecurity(),
       this.auditQuantumModules(),
     ])
-    
+
     return this.generateComprehensiveReport(tasks)
   }
-  
+
   private async performStaticAnalysis(): Promise<StaticAnalysisReport> {
     const eslintResults = await execAsync('eslint . --ext .ts,.tsx,.js,.jsx --format json')
     const semgrepResults = await execAsync('semgrep --config=auto --json .')
     const banditResults = await execAsync('bandit -r . -f json')
-    
+
     return {
       eslint: JSON.parse(eslintResults.stdout),
       semgrep: JSON.parse(semgrepResults.stdout),
@@ -462,14 +462,14 @@ class SwaigelockSecurityEngine {
       timestamp: new Date().toISOString(),
     }
   }
-  
+
   private async scanDependencyVulnerabilities(): Promise<VulnerabilityReport> {
     const [npmAudit, snykResults, osv] = await Promise.all([
       execAsync('npm audit --json'),
       execAsync('snyk test --json'),
       this.osvScanner.scan(),
     ])
-    
+
     return {
       npm: JSON.parse(npmAudit.stdout),
       snyk: JSON.parse(snykResults.stdout),
@@ -477,23 +477,23 @@ class SwaigelockSecurityEngine {
       riskScore: this.calculateRiskScore([npmAudit, snykResults, osv]),
     }
   }
-  
+
   async performRealTimeMonitoring(): Promise<void> {
     // WebSocket connection for real-time threat intelligence
     const threatSocket = new WebSocket('wss://threat-intel.swaigelock.network')
-    
+
     threatSocket.onmessage = (event) => {
       const threat = JSON.parse(event.data) as ThreatIndicator
       this.processThreatIndicator(threat)
     }
-    
+
     // Memory monitoring with Web Workers
     const memoryWorker = new Worker('/workers/memory-monitor.js')
-    memoryWorker.postMessage({ 
+    memoryWorker.postMessage({
       command: 'startMonitoring',
-      interval: this.config.scanInterval 
+      interval: this.config.scanInterval
     })
-    
+
     // Network traffic analysis
     this.networkMonitor.startDeepPacketInspection()
   }
@@ -503,11 +503,11 @@ class SwaigelockSecurityEngine {
 class QuantumCryptoProvider {
   private quantumRng: QuantumRandomNumberGenerator
   private keyExchange: QuantumKeyExchange
-  
+
   async encryptSensitiveData(data: ArrayBuffer): Promise<EncryptedPayload> {
     const quantumKey = await this.quantumRng.generateKey(256)
     const iv = await this.quantumRng.generateBytes(16)
-    
+
     const cipher = await crypto.subtle.importKey(
       'raw',
       quantumKey,
@@ -515,13 +515,13 @@ class QuantumCryptoProvider {
       false,
       ['encrypt']
     )
-    
+
     const encrypted = await crypto.subtle.encrypt(
       { name: 'AES-GCM', iv },
       cipher,
       data
     )
-    
+
     return {
       ciphertext: new Uint8Array(encrypted),
       iv: iv,
@@ -575,10 +575,10 @@ const securityScanners = {
 
 async function runComprehensiveScan() {
   console.log('🔒 Initializing SWAIGELOCK Security Suite...')
-  
+
   const results = {}
   const startTime = performance.now()
-  
+
   for (const [scanner, config] of Object.entries(securityScanners)) {
     try {
       console.log(`Running ${scanner}...`)
@@ -597,15 +597,15 @@ async function runComprehensiveScan() {
       }
     }
   }
-  
+
   const report = generateSecurityReport(results)
   await saveReport(report)
-  
+
   if (report.criticalIssues > 0) {
     console.error('❌ CRITICAL SECURITY ISSUES DETECTED')
     process.exit(1)
   }
-  
+
   console.log('✅ Security scan completed successfully')
   return report
 }
@@ -633,36 +633,36 @@ interface PerformanceMetrics {
 class PerformanceOptimizer {
   private metrics: PerformanceMetrics[] = []
   private observer: PerformanceObserver
-  
+
   constructor() {
     this.observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         this.processPerformanceEntry(entry)
       }
     })
-    
+
     this.observer.observe({ entryTypes: ['navigation', 'measure', 'paint'] })
   }
-  
+
   async optimizeBundle(): Promise<OptimizationReport> {
     const analysis = await this.analyzeBundleSize()
     const optimizations = []
-    
+
     // Tree shaking optimization
     if (analysis.unusedExports > 0) {
       optimizations.push(await this.removeUnusedExports())
     }
-    
+
     // Code splitting recommendations
     if (analysis.largeChunks.length > 0) {
       optimizations.push(await this.implementCodeSplitting())
     }
-    
+
     // Dynamic imports for quantum modules
     if (analysis.quantumModuleSize > 1024 * 1024) {
       optimizations.push(await this.lazyLoadQuantumModules())
     }
-    
+
     return {
       originalSize: analysis.totalSize,
       optimizedSize: analysis.totalSize - optimizations.reduce((acc, opt) => acc + opt.savings, 0),
@@ -670,14 +670,14 @@ class PerformanceOptimizer {
       recommendations: this.generateRecommendations(analysis),
     }
   }
-  
+
   private async lazyLoadQuantumModules(): Promise<Optimization> {
     const dynamicImports = `
       const QuantumProcessor = lazy(() => import('./lib/quantum/processor'))
       const QuantumVisualizer = lazy(() => import('./components/quantum/visualizer'))
       const QuantumSimulation = lazy(() => import('./lib/quantum/simulation'))
     `
-    
+
     return {
       type: 'lazy-loading',
       description: 'Implemented lazy loading for quantum modules',
@@ -692,31 +692,31 @@ class PerformanceOptimizer {
 class QuantumWorker {
   private processor: QuantumProcessor
   private simulationState: SimulationState
-  
+
   constructor() {
     self.onmessage = this.handleMessage.bind(this)
     this.processor = new QuantumProcessor()
   }
-  
+
   private async handleMessage(event: MessageEvent) {
     const { type, payload } = event.data
-    
+
     switch (type) {
       case 'INITIALIZE_QUANTUM_STATE':
         const result = await this.processor.initialize(payload.qubits)
         self.postMessage({ type: 'QUANTUM_STATE_INITIALIZED', result })
         break
-        
+
       case 'EVOLVE_QUANTUM_STATE':
         const evolution = await this.processor.evolve(payload.timeStep)
         self.postMessage({ type: 'QUANTUM_STATE_EVOLVED', evolution })
         break
-        
+
       case 'MEASURE_QUANTUM_STATE':
         const measurement = await this.processor.measure(payload.qubits)
         self.postMessage({ type: 'QUANTUM_MEASUREMENT', measurement })
         break
-        
+
       case 'APPLY_QUANTUM_GATE':
         await this.processor.applyGate(payload.gate, payload.target)
         self.postMessage({ type: 'QUANTUM_GATE_APPLIED' })
@@ -873,7 +873,7 @@ describe('Quantum Simulation Integration Tests', () => {
   let quantumProcessor: QuantumProcessor
   let visualizer: QuantumVisualizer
   let securityEngine: SwaigelockSecurityEngine
-  
+
   beforeAll(async () => {
     quantumProcessor = new QuantumProcessor(8) // 8-qubit system
     visualizer = new QuantumVisualizer({
@@ -886,65 +886,65 @@ describe('Quantum Simulation Integration Tests', () => {
       threatDetectionLevel: 'paranoid',
       realTimeMonitoring: true,
     })
-    
+
     await quantumProcessor.initialize()
     await securityEngine.initializeSecuritySuite()
   })
-  
+
   describe('Quantum State Evolution', () => {
     test('should evolve quantum state correctly over time', async () => {
       const initialState = quantumProcessor.getState()
-      
+
       await quantumProcessor.applyHadamard(0)
       await quantumProcessor.applyCNOT(0, 1)
       await quantumProcessor.evolveState(0.1)
-      
+
       const finalState = quantumProcessor.getState()
-      
+
       expect(finalState.entanglement).toBeGreaterThan(0.5)
       expect(finalState.coherence).toBeGreaterThan(0.8)
       expect(finalState.fidelity).toBeCloseTo(1.0, 2)
     })
-    
+
     test('should handle quantum decoherence properly', async () => {
       const decoherenceTime = 100 // milliseconds
-      
+
       await quantumProcessor.enableDecoherence(decoherenceTime)
       await quantumProcessor.evolveState(decoherenceTime * 2)
-      
+
       const state = quantumProcessor.getState()
       expect(state.coherence).toBeLessThan(0.5)
     })
   })
-  
+
   describe('Visualization Performance', () => {
     test('should maintain 60fps under heavy load', async () => {
       const frameRates: number[] = []
       const duration = 5000 // 5 seconds
-      
+
       const startTime = performance.now()
       while (performance.now() - startTime < duration) {
         const frameStart = performance.now()
         await visualizer.renderFrame()
         const frameEnd = performance.now()
-        
+
         frameRates.push(1000 / (frameEnd - frameStart))
       }
-      
+
       const averageFps = frameRates.reduce((a, b) => a + b) / frameRates.length
       expect(averageFps).toBeGreaterThanOrEqual(60)
     })
   })
-  
+
   describe('Security Compliance', () => {
     test('should pass all security scans', async () => {
       const report = await securityEngine.performComprehensiveScan()
-      
+
       expect(report.criticalVulnerabilities).toBe(0)
       expect(report.highVulnerabilities).toBeLessThanOrEqual(2)
       expect(report.overallRiskScore).toBeLessThan(7.0)
     })
-    
+
     test('should detect and prevent common attack vectors', async () => {
       const attackVectors = [
         'xss-injection',
@@ -953,7 +953,7 @@ describe('Quantum Simulation Integration Tests', () => {
         'code-injection',
         'prototype-pollution',
       ]
-      
+
       for (const vector of attackVectors) {
         const detected = await securityEngine.testAttackVector(vector)
         expect(detected).toBe(true)
@@ -967,10 +967,10 @@ describe('Performance Benchmarks', () => {
   test('WebAssembly quantum operations should be faster than JavaScript', async () => {
     const wasmTime = await benchmarkWasmQuantumOps()
     const jsTime = await benchmarkJsQuantumOps()
-    
+
     expect(wasmTime).toBeLessThan(jsTime * 0.5) // At least 2x faster
   })
-  
+
   test('Bundle size should be under 2MB gzipped', async () => {
     const bundleSize = await getBundleSize()
     expect(bundleSize.gzipped).toBeLessThan(2 * 1024 * 1024)

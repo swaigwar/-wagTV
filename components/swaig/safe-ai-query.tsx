@@ -75,9 +75,9 @@ export default function SafeAIQueryComponent() {
 
     return `This is a simulated AI response to: "${userPrompt}"
 
-    The response demonstrates how output would be processed and sanitized before being displayed to the user.
+The response demonstrates how output would be processed and sanitized before being displayed to the user.
 
-    In a real implementation, this would come from an actual AI model API.`
+In a real implementation, this would come from an actual AI model API.`
   }
 
   return (

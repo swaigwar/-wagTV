@@ -90,3 +90,5 @@ Rather than merging entire branches, focus on extracting specific features from 
 4. Test thoroughly before merging back to main
 
 This approach will avoid the complexity of merging branches with unrelated histories and allow for a more controlled integration of important features.
+
+git checkout -b feature/integrate-branch-improvements main

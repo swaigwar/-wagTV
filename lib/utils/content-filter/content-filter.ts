@@ -1,19 +1,23 @@
-import { ContentFilter as BaseContentFilter, FilterResult, FilterConfig } from './index';
+import {
+  ContentFilter as BaseContentFilter,
+  FilterResult,
+  FilterConfig,
+} from './index';
 
 /**
  * Simplified wrapper around ContentFilter for easier use
  */
 export class ContentFilterWrapper {
   private filter: BaseContentFilter;
-  
+
   constructor(config?: Partial<FilterConfig>) {
     this.filter = new BaseContentFilter({
       strictMode: config?.strictMode ?? true,
       customBlocklist: config?.customBlocklist ?? [],
-      allowEducational: config?.allowEducational ?? true
+      allowEducational: config?.allowEducational ?? true,
     });
   }
-  
+
   /**
    * Filter content and return result
    * @param content The text content to filter
@@ -22,7 +26,7 @@ export class ContentFilterWrapper {
   filterContent(content: string): FilterResult {
     return this.filter.filterContent(content);
   }
-  
+
   /**
    * Quick check if content is allowed
    * @param content The text content to check

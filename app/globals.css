@@ -6,7 +6,7 @@
   html {
     @apply bg-black text-white;
   }
-  
+
   body {
     @apply antialiased;
   }
@@ -16,13 +16,119 @@
   .cosmic-gradient {
     @apply bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900;
   }
-  
+
   .neon-text {
     @apply text-cyan-400;
     text-shadow: 0 0 10px theme(colors.cyan.400);
   }
-  
+
   .glass-panel {
     @apply bg-black/20 backdrop-blur-md border border-white/10 rounded-lg;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-700 {
+    animation-delay: 700ms;
+  }
+
+  /* Add more animation delays for particles */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .animation-delay-1500 {
+    animation-delay: 1500ms;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2000ms;
+  }
+}
+
+@layer utilities {
+  .animate-twinkle {
+    animation: twinkle 3s infinite;
+  }
+
+  .animate-float {
+    animation: float 8s infinite;
+  }
+
+  .animate-expand {
+    animation: expand 2s forwards;
+  }
+
+  .radial-grid {
+    background-image:
+      radial-gradient(
+        circle,
+        transparent 10%,
+        rgba(255, 255, 255, 0.1) 10%,
+        rgba(255, 255, 255, 0.1) 11%,
+        transparent 11%,
+        transparent
+      ),
+      radial-gradient(
+        circle,
+        transparent 10%,
+        rgba(255, 255, 255, 0.1) 10%,
+        rgba(255, 255, 255, 0.1) 11%,
+        transparent 11%,
+        transparent
+      );
+    background-size: 60px 60px;
+    background-position:
+      0 0,
+      30px 30px;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-5px) translateX(3px);
+  }
+  50% {
+    transform: translateY(0) translateX(0);
+  }
+  75% {
+    transform: translateY(5px) translateX(-3px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+@keyframes expand {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
   }
 }

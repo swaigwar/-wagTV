@@ -1,19 +1,21 @@
-'use client'
+'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import { useRef, useMemo, useEffect, memo, useState } from 'react'
-import * as THREE from 'three'
-import { logger } from '@/lib/utils/logger'
-import rateLimiter from '@/lib/utils/rate-limiter'
-import aiSanitizer from '@/lib/utils/ai-sanitizer'
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import { useRef, useMemo, useEffect, memo, useState } from 'react';
+import * as THREE from 'three';
+import { logger } from '@/lib/utils/logger';
+import rateLimiter from '@/lib/utils/rate-limiter';
+import aiSanitizer from '@/lib/utils/ai-sanitizer';
 
 // Maximum number of particles allowed with proper validation
-const DEFAULT_MAX_PARTICLES = 1000
-const MAX_PARTICLES = parseInt(process.env.NEXT_PUBLIC_MAX_PARTICLES || DEFAULT_MAX_PARTICLES.toString())
+const DEFAULT_MAX_PARTICLES = 1000;
+const MAX_PARTICLES = parseInt(
+  process.env.NEXT_PUBLIC_MAX_PARTICLES || DEFAULT_MAX_PARTICLES.toString(),
+);
 
 // Default user ID if not provided
-const DEFAULT_USER_ID = 'anonymous'
+const DEFAULT_USER_ID = 'anonymous';
 
 // Define the allowed user configuration interface
 interface QuantumConfig {
@@ -28,19 +30,19 @@ interface QuantumConfig {
 
 const QuantumParticles = memo(function QuantumParticles({
   userConfig = {},
-  particleCount: requestedCount = 500
+  particleCount: requestedCount = 500,
 }: {
   userConfig?: QuantumConfig;
   particleCount?: number;
 }) {
-  const meshRef = useRef<THREE.InstancedMesh | null>(null)
+  const meshRef = useRef<THREE.InstancedMesh | null>(null);
 
   // Validate and sanitize particle count
   const particleCount = useMemo(() => {
     // Input validation: ensure count is within safe bounds
     return Math.min(
       Math.max(10, requestedCount), // Minimum of 10 particles
-      MAX_PARTICLES                // Maximum from environment variable
+      MAX_PARTICLES, // Maximum from environment variable
     );
   }, [requestedCount]);
 
@@ -65,19 +67,31 @@ const QuantumParticles = memo(function QuantumParticles({
 
       // Additional validation for numeric values
       if (parsedConfig.speedFactor) {
-        parsedConfig.speedFactor = Math.min(Math.max(0.1, parsedConfig.speedFactor), 3.0);
+        parsedConfig.speedFactor = Math.min(
+          Math.max(0.1, parsedConfig.speedFactor),
+          3.0,
+        );
       }
 
       if (parsedConfig.scaleFactor) {
-        parsedConfig.scaleFactor = Math.min(Math.max(0.1, parsedConfig.scaleFactor), 5.0);
+        parsedConfig.scaleFactor = Math.min(
+          Math.max(0.1, parsedConfig.scaleFactor),
+          5.0,
+        );
       }
 
       if (parsedConfig.opacity) {
-        parsedConfig.opacity = Math.min(Math.max(0.1, parsedConfig.opacity), 1.0);
+        parsedConfig.opacity = Math.min(
+          Math.max(0.1, parsedConfig.opacity),
+          1.0,
+        );
       }
 
       if (parsedConfig.particleDetails) {
-        parsedConfig.particleDetails = Math.min(Math.max(4, parsedConfig.particleDetails), 12);
+        parsedConfig.particleDetails = Math.min(
+          Math.max(4, parsedConfig.particleDetails),
+          12,
+        );
       }
 
       return parsedConfig;
@@ -154,21 +168,27 @@ const QuantumParticles = memo(function QuantumParticles({
     logger.info('Optimized quantum visualization initialized', {
       particleCount,
       maxParticles: MAX_PARTICLES,
-      hasUserConfig: Object.keys(sanitizedConfig).length > 0
+      hasUserConfig: Object.keys(sanitizedConfig).length > 0,
     });
   }, [particleCount, sanitizedConfig]);
 
   // Get sphere detail level with safe default
   const sphereDetail = sanitizedConfig?.particleDetails || 6;
 
+  // Set a slightly larger size for particles to improve visibility
+  const particleSize = 1.5; // Increased from default 1.0
+
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, particleCount]}>
-      <sphereGeometry args={[1, sphereDetail, sphereDetail]} />
-      <meshBasicMaterial
+      <sphereGeometry args={[particleSize, sphereDetail, sphereDetail]} />
+      <meshPhongMaterial
         vertexColors
         transparent
-        opacity={sanitizedConfig?.opacity || 0.8}
-        color={sanitizedConfig?.color || "#00ffff"}
+        opacity={sanitizedConfig?.opacity || 0.9} // Increased from 0.8
+        color={sanitizedConfig?.color || '#00ffff'}
+        emissive={sanitizedConfig?.emissive || '#00aaff'} // Brightened from #003333
+        emissiveIntensity={sanitizedConfig?.emissiveIntensity || 0.8} // Increased from 0.5
+        shininess={100} // Increased from 90 for more specular highlights
       />
     </instancedMesh>
   );
@@ -183,17 +203,22 @@ interface OptimizedQuantumVisualizerProps {
 export default function OptimizedQuantumVisualizer({
   userId = DEFAULT_USER_ID,
   particleCount = 500,
-  userConfig = {}
+  userConfig = {},
 }: OptimizedQuantumVisualizerProps) {
   const [error, setError] = useState<string | null>(null);
 
   // Check rate limiting
   useEffect(() => {
-    const canProceed = rateLimiter.check(userId, 'optimized-quantum-visualizer');
+    const canProceed = rateLimiter.check(
+      userId,
+      'optimized-quantum-visualizer',
+    );
 
     if (!canProceed) {
       setError('Rate limit exceeded. Please try again later.');
-      logger.warn('Rate limit exceeded for optimized quantum visualizer', { userId });
+      logger.warn('Rate limit exceeded for optimized quantum visualizer', {
+        userId,
+      });
     }
   }, [userId]);
 
@@ -213,16 +238,45 @@ export default function OptimizedQuantumVisualizer({
         camera={{ position: [0, 0, 30], fov: 75 }}
         performance={{ min: 0.5 }}
         dpr={[1, 2]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.5, // Increased exposure for better visibility
+        }}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[10, 10, 10]} intensity={0.8} color="#ffffff" />
-        <pointLight position={[-10, -10, -10]} intensity={0.4} color="#ff00ff" />
-        <QuantumParticles particleCount={particleCount} userConfig={userConfig} />
+        <color attach="background" args={['#000020']} />{' '}
+        {/* Very dark blue background instead of pure black */}
+        <ambientLight intensity={0.8} /> {/* Increased from 0.5 */}
+        <pointLight
+          position={[10, 10, 10]}
+          intensity={1.5}
+          color="#ffffff"
+        />{' '}
+        {/* Increased from 1.2 */}
+        <pointLight
+          position={[-10, -10, -10]}
+          intensity={1.0}
+          color="#00ffff"
+        />{' '}
+        {/* Increased from 0.8 */}
+        <hemisphereLight
+          color="#00ccff"
+          groundColor="#ff00ff"
+          intensity={0.8}
+        />{' '}
+        {/* Increased from 0.5 */}
+        <QuantumParticles
+          particleCount={particleCount}
+          userConfig={userConfig}
+        />
         <OrbitControls
           enableZoom={true}
           enablePan={true}
           maxDistance={50}
           minDistance={10}
+          autoRotate={true} // Add subtle rotation for better 3D perception
+          autoRotateSpeed={0.5} // Slow rotation speed
         />
       </Canvas>
     </div>

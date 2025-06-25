@@ -19,36 +19,145 @@ export class ContentFilter {
   private blockedWords: Set<string> = new Set();
   private suspiciousPatterns: RegExp[] = [];
   private educationalExceptions: Set<string> = new Set();
-  
-  constructor(private config: FilterConfig = { strictMode: true, customBlocklist: [], allowEducational: true }) {
+
+  constructor(
+    private config: FilterConfig = {
+      strictMode: true,
+      customBlocklist: [],
+      allowEducational: true,
+    },
+  ) {
     this.initializeBlocklists();
   }
 
   private initializeBlocklists(): void {
     const coreBlocked = [
-      'nude', 'naked', 'sex', 'sexual', 'porn', 'erotic', 'breast', 'genitals',
-      'intimate', 'seduce', 'orgasm', 'masturbat', 'fetish', 'bdsm',
-      'kill', 'murder', 'death', 'dead', 'blood', 'gore', 'violent', 'torture',
-      'stab', 'shoot', 'gun', 'weapon', 'knife', 'bomb', 'explode', 'suicide',
-      'hang', 'strangle', 'beat up', 'assault', 'fight', 'war', 'battle',
-      'drug', 'cocaine', 'heroin', 'meth', 'marijuana', 'weed', 'high', 'stoned',
-      'drunk', 'alcohol', 'beer', 'wine', 'vodka', 'whiskey', 'smoke', 'cigarette',
-      'fuck', 'shit', 'damn', 'hell', 'bitch', 'ass', 'crap', 'piss',
-      'bastard', 'whore', 'slut', 'gay', 'lesbian', 'homo', 'fag',
-      'scary', 'horror', 'nightmare', 'monster', 'demon', 'devil', 'evil',
-      'ghost', 'zombie', 'corpse', 'skeleton', 'witch', 'occult',
-      'racist', 'nazi', 'hitler', 'slave', 'terrorism', 'terrorist', 'isis',
-      'hate', 'discrimination', 'supremacist', 'kkk',
-      'child', 'kid', 'minor', 'teen', 'young', 'school', 'student',
-      'baby', 'infant', 'underage', 'lolita', 'daddy', 'mommy',
-      ...this.config.customBlocklist
+      'nude',
+      'naked',
+      'sex',
+      'sexual',
+      'porn',
+      'erotic',
+      'breast',
+      'genitals',
+      'intimate',
+      'seduce',
+      'orgasm',
+      'masturbat',
+      'fetish',
+      'bdsm',
+      'kill',
+      'murder',
+      'death',
+      'dead',
+      'blood',
+      'gore',
+      'violent',
+      'torture',
+      'stab',
+      'shoot',
+      'gun',
+      'weapon',
+      'knife',
+      'bomb',
+      'explode',
+      'suicide',
+      'hang',
+      'strangle',
+      'beat up',
+      'assault',
+      'fight',
+      'war',
+      'battle',
+      'drug',
+      'cocaine',
+      'heroin',
+      'meth',
+      'marijuana',
+      'weed',
+      'high',
+      'stoned',
+      'drunk',
+      'alcohol',
+      'beer',
+      'wine',
+      'vodka',
+      'whiskey',
+      'smoke',
+      'cigarette',
+      'fuck',
+      'shit',
+      'damn',
+      'hell',
+      'bitch',
+      'ass',
+      'crap',
+      'piss',
+      'bastard',
+      'whore',
+      'slut',
+      'gay',
+      'lesbian',
+      'homo',
+      'fag',
+      'scary',
+      'horror',
+      'nightmare',
+      'monster',
+      'demon',
+      'devil',
+      'evil',
+      'ghost',
+      'zombie',
+      'corpse',
+      'skeleton',
+      'witch',
+      'occult',
+      'racist',
+      'nazi',
+      'hitler',
+      'slave',
+      'terrorism',
+      'terrorist',
+      'isis',
+      'hate',
+      'discrimination',
+      'supremacist',
+      'kkk',
+      'child',
+      'kid',
+      'minor',
+      'teen',
+      'young',
+      'school',
+      'student',
+      'baby',
+      'infant',
+      'underage',
+      'lolita',
+      'daddy',
+      'mommy',
+      ...this.config.customBlocklist,
     ];
-    this.blockedWords = new Set(coreBlocked.map(w => w.toLowerCase()));
+    this.blockedWords = new Set(coreBlocked.map((w) => w.toLowerCase()));
 
     this.educationalExceptions = new Set([
-      'educational documentary', 'science', 'nature', 'space', 'astronomy',
-      'biology', 'chemistry', 'physics', 'history', 'geography', 'mathematics',
-      'art', 'music', 'literature', 'technology', 'engineering'
+      'educational documentary',
+      'science',
+      'nature',
+      'space',
+      'astronomy',
+      'biology',
+      'chemistry',
+      'physics',
+      'history',
+      'geography',
+      'mathematics',
+      'art',
+      'music',
+      'literature',
+      'technology',
+      'engineering',
     ]);
 
     this.suspiciousPatterns = [
@@ -57,7 +166,7 @@ export class ContentFilter {
       /\b(meet|chat|talk).*private\b/i,
       /\b(send|show).*pic(ture)?s?\b/i,
       /\bno.*parent(s)?\b/i,
-      /\bsecret\b.*\bfrom\b/i
+      /\bsecret\b.*\bfrom\b/i,
     ];
   }
 
@@ -68,10 +177,18 @@ export class ContentFilter {
     const patterns = this.checkSuspiciousPatterns(content);
     if (!patterns.allowed) return patterns;
     if (this.config.allowEducational && this.isEducationalContent(normalized)) {
-      return { allowed: true, confidence: 0.9, reason: 'Educational content exception applied' };
+      return {
+        allowed: true,
+        confidence: 0.9,
+        reason: 'Educational content exception applied',
+      };
     }
     const sentiment = this.analyzeSentiment(content);
-    return { allowed: true, confidence: sentiment.confidence, suggestions: this.generateSafeSuggestions(content) };
+    return {
+      allowed: true,
+      confidence: sentiment.confidence,
+      suggestions: this.generateSafeSuggestions(content),
+    };
   }
 
   private checkBlockedWords(content: string): FilterResult {
@@ -79,7 +196,12 @@ export class ContentFilter {
     for (const word of words) {
       const clean = word.replace(/[^\w]/g, '').toLowerCase();
       if (this.blockedWords.has(clean)) {
-        return { allowed: false, confidence: 1.0, reason: `Contains blocked content: "${clean}"`, suggestions: this.getSaferAlternatives(clean) };
+        return {
+          allowed: false,
+          confidence: 1.0,
+          reason: `Contains blocked content: "${clean}"`,
+          suggestions: this.getSaferAlternatives(clean),
+        };
       }
     }
     return { allowed: true, confidence: 1.0 };
@@ -88,7 +210,15 @@ export class ContentFilter {
   private checkSuspiciousPatterns(content: string): FilterResult {
     for (const pattern of this.suspiciousPatterns) {
       if (pattern.test(content)) {
-        return { allowed: false, confidence: 0.8, reason: 'Content contains potentially inappropriate patterns', suggestions: ['Try describing scenes without age references', 'Focus on general activities rather than specific interactions'] };
+        return {
+          allowed: false,
+          confidence: 0.8,
+          reason: 'Content contains potentially inappropriate patterns',
+          suggestions: [
+            'Try describing scenes without age references',
+            'Focus on general activities rather than specific interactions',
+          ],
+        };
       }
     }
     return { allowed: true, confidence: 1.0 };
@@ -102,12 +232,30 @@ export class ContentFilter {
   }
 
   private analyzeSentiment(content: string): { confidence: number } {
-    const positiveWords = ['beautiful', 'amazing', 'wonderful', 'peaceful', 'happy', 'fun', 'exciting'];
-    const negativeWords = ['dark', 'scary', 'sad', 'angry', 'disturbing', 'creepy'];
+    const positiveWords = [
+      'beautiful',
+      'amazing',
+      'wonderful',
+      'peaceful',
+      'happy',
+      'fun',
+      'exciting',
+    ];
+    const negativeWords = [
+      'dark',
+      'scary',
+      'sad',
+      'angry',
+      'disturbing',
+      'creepy',
+    ];
     const words = content.toLowerCase().split(/\s+/);
     let positive = 0;
     let negative = 0;
-    words.forEach(w => { if (positiveWords.includes(w)) positive++; if (negativeWords.includes(w)) negative++; });
+    words.forEach((w) => {
+      if (positiveWords.includes(w)) positive++;
+      if (negativeWords.includes(w)) negative++;
+    });
     const confidence = negative > positive ? 0.3 : 0.9;
     return { confidence };
   }
@@ -142,17 +290,25 @@ export class ContentFilter {
       'Focus on beautiful scenery or landscapes',
       'Include friendly characters or animals',
       'Describe peaceful or fun activities',
-      'Add educational elements about science or nature'
+      'Add educational elements about science or nature',
     ];
     return suggestions.slice(0, 3);
   }
 
-  monitorLiveContent(content: string, callback: (result: FilterResult) => void): void {
+  monitorLiveContent(
+    content: string,
+    callback: (result: FilterResult) => void,
+  ): void {
     const result = this.filterContent(content);
     if (!result.allowed) {
       callback(result);
     } else if (result.confidence < 0.5) {
-      callback({ allowed: false, confidence: result.confidence, reason: 'Content flagged for manual review', suggestions: result.suggestions });
+      callback({
+        allowed: false,
+        confidence: result.confidence,
+        reason: 'Content flagged for manual review',
+        suggestions: result.suggestions,
+      });
     }
   }
 
@@ -162,11 +318,26 @@ export class ContentFilter {
   }
 
   getFilterStats(): { totalBlocked: number; categories: string[] } {
-    return { totalBlocked: this.blockedWords.size, categories: ['Nudity/Sexual', 'Violence/Gore', 'Substances', 'Vulgar Language', 'Disturbing', 'Hate/Discrimination', 'Predatory'] };
+    return {
+      totalBlocked: this.blockedWords.size,
+      categories: [
+        'Nudity/Sexual',
+        'Violence/Gore',
+        'Substances',
+        'Vulgar Language',
+        'Disturbing',
+        'Hate/Discrimination',
+        'Predatory',
+      ],
+    };
   }
 }
 
-export const swagTVFilter = new ContentFilter({ strictMode: true, customBlocklist: [], allowEducational: true });
+export const swagTVFilter = new ContentFilter({
+  strictMode: true,
+  customBlocklist: [],
+  allowEducational: true,
+});
 
 export function quickContentCheck(content: string): boolean {
   const result = swagTVFilter.filterContent(content);
@@ -174,5 +345,13 @@ export function quickContentCheck(content: string): boolean {
 }
 
 export function emergencyContentBlock(reason: string): FilterResult {
-  return { allowed: false, confidence: 1.0, reason: `EMERGENCY BLOCK: ${reason}`, suggestions: ['Please try a completely different prompt', 'Focus on positive, family-friendly content'] };
+  return {
+    allowed: false,
+    confidence: 1.0,
+    reason: `EMERGENCY BLOCK: ${reason}`,
+    suggestions: [
+      'Please try a completely different prompt',
+      'Focus on positive, family-friendly content',
+    ],
+  };
 }

@@ -54,9 +54,13 @@ export default function Home() {
   const [currentChannel, setCurrentChannel] = useState('cosmic');
 
   useEffect(() => {
-    setMounted(true);
-    logger.info('Application mounted successfully');
-    logger.info('Three.js Canvas initializing...');
+    const timer = setTimeout(() => {
+      setMounted(true);
+      logger.info('Application mounted successfully');
+      logger.info('Three.js Canvas initializing...');
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const renderChannel = () => {

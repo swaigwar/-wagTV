@@ -42,6 +42,14 @@ const nextConfig = {
     return config;
   },
   async headers() {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
+    // Development CSP - allows unsafe-eval and unsafe-inline for Next.js hot reloading
+    const devCSP = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; frame-src 'none'; connect-src 'self' https: ws: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; font-src 'self' data:; manifest-src 'self';";
+    
+    // Production CSP - strict security for production deployment
+    const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self'; frame-src 'none'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; font-src 'self' data:; manifest-src 'self';";
+    
     return [
       {
         source: "/(.*)",
@@ -53,8 +61,7 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self'; frame-src 'none'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; font-src 'self' data:; manifest-src 'self';"
+            value: isDevelopment ? devCSP : prodCSP
           }
         ]
       }

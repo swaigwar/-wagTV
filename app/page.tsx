@@ -65,7 +65,7 @@ export default function Home() {
         logger.info('Rendering Quantum channel')
         return (
           <ErrorBoundary>
-            <OptimizedQuantumVisualizer />
+            <OptimizedQuantumVisualizer particleCount={100} />
           </ErrorBoundary>
         )
       case 'bigbang':

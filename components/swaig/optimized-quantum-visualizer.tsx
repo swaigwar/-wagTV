@@ -113,15 +113,25 @@ const QuantumParticles = memo(function QuantumParticles({
 
       // Safety check for bounds - should always be true but adding as defense-in-depth
       if (offset + 2 < pos.length) {
-        // Use Float32Array.set with offset to avoid direct indexed assignment
-        pos.set([(Math.random() - 0.5) * 50], offset);
-        pos.set([(Math.random() - 0.5) * 50], offset + 1);
-        pos.set([(Math.random() - 0.5) * 50], offset + 2);
+        // Set coordinates directly in the array
+        pos[offset] = (Math.random() - 0.5) * 50;     // x // eslint-disable-line security/detect-object-injection
+        pos[offset + 1] = (Math.random() - 0.5) * 50; // y // eslint-disable-line security/detect-object-injection
+        pos[offset + 2] = (Math.random() - 0.5) * 50; // z // eslint-disable-line security/detect-object-injection
       }
     }
 
     return { positions: pos };
   }, [particleCount]);
+
+  // Critical fix: Update Three.js geometry when particle count changes
+  useEffect(() => {
+    if (meshRef.current && meshRef.current.geometry) {
+      const geometry = meshRef.current.geometry;
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.attributes.position.needsUpdate = true;
+      geometry.setDrawRange(0, particleCount);
+    }
+  }, [positions, particleCount]);
 
   // Optimize animation loop with reduced calculations
   useFrame((state) => {

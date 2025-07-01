@@ -5,6 +5,8 @@
  * security issues like XSS attacks and content policy violations.
  */
 
+import DOMPurify from 'dompurify';
+
 interface SanitizerOptions {
   /** Maximum allowed length for sanitized output */
   maxLength?: number;
@@ -83,31 +85,25 @@ export function detectHarmfulContent(content: string): boolean {
 }
 
 /**
- * Sanitizes HTML content allowing only specific tags
+ * Sanitizes HTML content using DOMPurify
  * @param {string} html - The HTML content to sanitize
  * @param {string[]} allowedTags - List of allowed HTML tags
  * @returns {string} - Sanitized HTML
  */
 function sanitizeHtml(html: string, allowedTags: string[]): string {
-  // In a browser environment
-  if (typeof document !== 'undefined') {
-    const tempElement = document.createElement('div');
-    tempElement.textContent = html;
-    
-    // If allowed tags are specified, we need more sophisticated processing
-    if (allowedTags.length > 0) {
-      const sanitized = tempElement.innerHTML;
-      
-      // This is a simplified example - in production use a proper HTML sanitizer library
-      // like DOMPurify or similar
-      return sanitized;
-    }
-    
-    return tempElement.innerHTML;
+  // Use DOMPurify for robust HTML sanitization
+  if (typeof window !== 'undefined' && DOMPurify.isSupported) {
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: allowedTags,
+      ALLOWED_ATTR: ['class', 'id'],
+      KEEP_CONTENT: true,
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false,
+      RETURN_TRUSTED_TYPE: false
+    });
   }
   
-  // In a Node.js environment, we would use a server-side sanitizer library
-  // For now, just return a basic escaped version
+  // Fallback for server-side or when DOMPurify is not available
   return html
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

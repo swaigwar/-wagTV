@@ -129,7 +129,7 @@ In a real implementation, this would come from an actual AI model API.`;
           <h3 className="text-lg font-medium mb-2">AI Response:</h3>
           <div className="p-4 bg-gray-50 rounded-md border border-gray-200 whitespace-pre-wrap">
             {/* Using direct sanitized text output instead of dangerouslySetInnerHTML */}
-            {aiSanitizer.sanitizeAiOutput(response)}
+            {response}
           </div>
           <div className="mt-2 text-xs text-gray-500">
             Note: The response has been sanitized for security

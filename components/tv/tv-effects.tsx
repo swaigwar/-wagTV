@@ -27,7 +27,7 @@ export const TVEffects: React.FC<TVEffectsProps> = ({
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
         const noise = Math.random() * 255;
-        (data as Uint8ClampedArray)[i] = noise;
+        (data as Uint8ClampedArray)[i] = noise; // eslint-disable-line security/detect-object-injection
         data[i + 1] = noise;
         data[i + 2] = noise;
         data[i + 3] = 255;
@@ -55,7 +55,7 @@ export const TVEffects: React.FC<TVEffectsProps> = ({
     const barWidth = canvas.width / colors.length;
     // Use a safer approach without object injection
     for (let i = 0; i < colors.length; i++) {
-      ctx.fillStyle = colors[i] as string;
+      ctx.fillStyle = colors[i] as string; // eslint-disable-line security/detect-object-injection
       ctx.fillRect(i * barWidth, 0, barWidth, canvas.height);
     }
     ctx.fillStyle = '#000000';

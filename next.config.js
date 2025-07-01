@@ -54,7 +54,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src * blob: data:; media-src 'none'; frame-src 'none'; connect-src *;"
+              "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self'; frame-src 'none'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; font-src 'self' data:; manifest-src 'self';"
           }
         ]
       }

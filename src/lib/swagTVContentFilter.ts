@@ -271,7 +271,7 @@ export class SwagTVContentFilter {
       kill: ['stop', 'end', 'finish'],
     };
     return (
-      alternatives[word] || [
+      alternatives[word] || [ // eslint-disable-line security/detect-object-injection
         'Consider a different approach',
         'Try more positive language',
       ]

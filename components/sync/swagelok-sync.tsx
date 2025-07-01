@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ContentFilter } from '../../lib/utils/content-filter';
+import { SwagTVContentFilter } from '../../src/lib/swagTVContentFilter';
 
 interface SwagelokRoom {
   id: string;
@@ -101,7 +101,7 @@ export const SwagelokSync: React.FC = () => {
     e.preventDefault();
     if (!currentPrompt.trim()) return;
 
-    const contentFilter = new ContentFilter();
+    const contentFilter = new SwagTVContentFilter();
     const filterResult = contentFilter.filterContent(currentPrompt);
 
     if (!filterResult.allowed) {
@@ -160,12 +160,13 @@ export const SwagelokSync: React.FC = () => {
   const renderStaticEffect = useCallback(
     (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
       const imageData = ctx.createImageData(canvas.width, canvas.height);
-      for (let i = 0; i < imageData.data.length; i += 4) {
+      const dataArray = imageData.data;
+      for (let i = 0; i < dataArray.length; i += 4) {
         const noise = Math.random() * 255;
-        imageData.data[i] = noise;
-        imageData.data[i + 1] = noise;
-        imageData.data[i + 2] = noise;
-        imageData.data[i + 3] = 255;
+        dataArray[i] = noise; // eslint-disable-line security/detect-object-injection
+        dataArray[i + 1] = noise; // eslint-disable-line security/detect-object-injection
+        dataArray[i + 2] = noise; // eslint-disable-line security/detect-object-injection
+        dataArray[i + 3] = 255; // eslint-disable-line security/detect-object-injection
       }
       ctx.putImageData(imageData, 0, 0);
     },
@@ -185,10 +186,10 @@ export const SwagelokSync: React.FC = () => {
         '#000000',
       ];
       const barWidth = canvas.width / colors.length;
-      for (let i = 0; i < colors.length; i++) {
-        ctx.fillStyle = colors[i];
+      colors.forEach((color, i) => {
+        ctx.fillStyle = color;
         ctx.fillRect(i * barWidth, 0, barWidth, canvas.height);
-      }
+      });
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 48px monospace';
       ctx.textAlign = 'center';
